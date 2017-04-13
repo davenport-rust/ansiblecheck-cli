@@ -1,0 +1,6 @@
+[package]
+name = "ansiblecheck"
+version = "0.1.0"
+authors = ["Christopher Davenport <ChristopherDavenport@outlook.com>"]
+
+[dependencies]
