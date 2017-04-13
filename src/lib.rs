@@ -5,7 +5,7 @@ pub enum OperatingSystem {
     EL,
     OracleLinux,
     OpenSUSE,
-    Ubuntu
+    Ubuntu,
 }
 
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Clone)]
@@ -21,56 +21,79 @@ pub enum OperatingSystemVersion {
     Yakkety,
     Xenial,
     Trusty,
-    Precise
+    Precise,
 }
 
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Clone)]
 pub struct VersionedOperatingSystem {
-    os : OperatingSystem,
-    version: OperatingSystemVersion
+    os: OperatingSystem,
+    version: OperatingSystemVersion,
 }
 
 
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Clone)]
-pub enum CommandError{
+pub enum CommandError {
     OSError,
-    OSVersionError
+    OSVersionError,
 }
 
 
-fn get_versioned_os(operatingsystem: String, version: String) -> Result<VersionedOperatingSystem, CommandError> {
-    get_os(operatingsystem)
-    .and_then( |os| get_os_version(os, version))
+fn get_versioned_os(
+    operatingsystem: String,
+    version: String,
+) -> Result<VersionedOperatingSystem, CommandError> {
+    get_os(operatingsystem).and_then(|os| get_os_version(os, version))
 }
 
-fn get_os(os: String) -> Result<OperatingSystem,CommandError> {
+fn get_os(os: String) -> Result<OperatingSystem, CommandError> {
     Ok(OperatingSystem::Ubuntu)
 }
 
-fn get_os_version(os: OperatingSystem, version: String) -> Result<VersionedOperatingSystem, CommandError> {
+fn get_os_version(
+    os: OperatingSystem,
+    version: String,
+) -> Result<VersionedOperatingSystem, CommandError> {
     match os {
         OperatingSystem::Arch => {
-            let vos = VersionedOperatingSystem{ os: os , version: OperatingSystemVersion::Latest };
+            let vos = VersionedOperatingSystem {
+                os: os,
+                version: OperatingSystemVersion::Latest,
+            };
             Ok(vos)
-        },
+        }
         OperatingSystem::Debian => {
-            let vos = VersionedOperatingSystem{ os : os , version: OperatingSystemVersion::Jessie};
+            let vos = VersionedOperatingSystem {
+                os: os,
+                version: OperatingSystemVersion::Jessie,
+            };
             Ok(vos)
-        },
+        }
         OperatingSystem::EL => {
-            let vos = VersionedOperatingSystem{ os: os, version: OperatingSystemVersion::Seven };
+            let vos = VersionedOperatingSystem {
+                os: os,
+                version: OperatingSystemVersion::Seven,
+            };
             Ok(vos)
-        },
+        }
         OperatingSystem::OracleLinux => {
-            let vos = VersionedOperatingSystem{ os : os, version: OperatingSystemVersion::Seven};
+            let vos = VersionedOperatingSystem {
+                os: os,
+                version: OperatingSystemVersion::Seven,
+            };
             Ok(vos)
         }
         OperatingSystem::OpenSUSE => {
-            let vos = VersionedOperatingSystem{ os:os , version: OperatingSystemVersion::Leap };
+            let vos = VersionedOperatingSystem {
+                os: os,
+                version: OperatingSystemVersion::Leap,
+            };
             Ok(vos)
         }
         OperatingSystem::Ubuntu => {
-            let vos = VersionedOperatingSystem{ os: os, version: OperatingSystemVersion::Xenial};
+            let vos = VersionedOperatingSystem {
+                os: os,
+                version: OperatingSystemVersion::Xenial,
+            };
             Ok(vos)
         }
     }
@@ -83,39 +106,45 @@ fn operating_system_string(os: OperatingSystem) -> String {
         OperatingSystem::EL => "el".to_string(),
         OperatingSystem::OracleLinux => "oraclelinux".to_string(),
         OperatingSystem::OpenSUSE => "opensuse".to_string(),
-        OperatingSystem::Ubuntu => "ubuntu".to_string()
+        OperatingSystem::Ubuntu => "ubuntu".to_string(),
     }
 }
 
 fn operation_system_version_string(version: OperatingSystemVersion) -> String {
     match version {
-        OperatingSystemVersion::Latest      => "latest".to_string(),
-        OperatingSystemVersion::Wheezy      => "wheezy".to_string(),
-        OperatingSystemVersion::Stretch     => "stretch".to_string(),
-        OperatingSystemVersion::Jessie      => "jessie".to_string(),
-        OperatingSystemVersion::Seven       => "7".to_string(),
-        OperatingSystemVersion::Six         => "6".to_string(),
-        OperatingSystemVersion::Tumbleweed  => "tumbleweed".to_string(),
-        OperatingSystemVersion::Leap        => "42.2".to_string(),
-        OperatingSystemVersion::Yakkety     => "yakkety".to_string(),
-        OperatingSystemVersion::Xenial      => "xenial".to_string(),
-        OperatingSystemVersion::Trusty      => "trusty".to_string(),
-        OperatingSystemVersion::Precise     => "precise".to_string()
+        OperatingSystemVersion::Latest => "latest".to_string(),
+        OperatingSystemVersion::Wheezy => "wheezy".to_string(),
+        OperatingSystemVersion::Stretch => "stretch".to_string(),
+        OperatingSystemVersion::Jessie => "jessie".to_string(),
+        OperatingSystemVersion::Seven => "7".to_string(),
+        OperatingSystemVersion::Six => "6".to_string(),
+        OperatingSystemVersion::Tumbleweed => "tumbleweed".to_string(),
+        OperatingSystemVersion::Leap => "42.2".to_string(),
+        OperatingSystemVersion::Yakkety => "yakkety".to_string(),
+        OperatingSystemVersion::Xenial => "xenial".to_string(),
+        OperatingSystemVersion::Trusty => "trusty".to_string(),
+        OperatingSystemVersion::Precise => "precise".to_string(),
     }
 }
+
+#[cfg(test)]
+#[macro_use]
+extern crate quickcheck;
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    #[test]
-    fn get_os_const_ubuntu() {
-        assert_eq!(Ok(OperatingSystem::Ubuntu), get_os("yellow".to_string()));
+    quickcheck! {
+      fn get_os_returns_ubuntu(xs: String) -> bool {
+          Ok(OperatingSystem::Ubuntu) == get_os(xs)
+      }
     }
 
-    #[test]
-    fn get_os_ok(){
-        assert!(get_os("yellow".to_string()).is_ok());
-    }
+    quickcheck! {
+         fn get_os_returns_ok(xs: String) -> bool {
+             get_os(xs).is_ok()
+         }
+     }
 
 }
