@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Christopher Davenport <ChristopherDavenport@outlook.com>"]
 
 [dependencies]
+clap = "2.23.2"
 
 [dev-dependencies]
 quickcheck = "0.3"

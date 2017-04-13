@@ -1,3 +1,4 @@
+
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Clone)]
 pub enum OperatingSystem {
     Arch,
